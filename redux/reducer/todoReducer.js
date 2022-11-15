@@ -2,9 +2,8 @@ import React from "react";
 import {
   Add_Todo,
   Delete_Todo_Item,
-  Update_Todo_Item,
   Set_Is_Editing_Item,
-  Set_Todo_Value,
+  Set_Edit_Value_for_Update,
 } from "../action";
 
 export const initialState = {
@@ -16,7 +15,6 @@ export const todoReducer = (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
     case Add_Todo:
-      console.log("state", state);
       const { id, title, des } = payload;
       return {
         ...state,
@@ -32,13 +30,14 @@ export const todoReducer = (state = initialState, action) => {
         list: newItems,
         isEditItem: false,
       };
-    case Update_Todo_Item:
+    case Set_Edit_Value_for_Update:
       const updateItem = state.list.map((item, idx) => {
         if (item.id !== payload.id) {
           return item;
         }
         return {
           ...item,
+          id: payload.id,
           title: payload.title,
           des: payload.des,
         };
@@ -48,6 +47,7 @@ export const todoReducer = (state = initialState, action) => {
         list: updateItem,
         isEditItem: false,
       };
+
     case Set_Is_Editing_Item:
       return {
         ...state,

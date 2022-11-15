@@ -2,15 +2,21 @@ import React from "react";
 import { useSelector } from "react-redux";
 import Item from "../item.js";
 
-const ListItems = ({ setEditValue }) => {
+const ListItems = () => {
   const listItem = useSelector((state) => state.todoReducer.list);
   return (
-    <div className="flex flex-row gap-4 items-center justify-center bg-slate-400">
-      {listItem.slice(-3).map((item, idx) => {
-        return <Item item={item} key={idx} setEditValue={setEditValue} />;
-      })}
-      <a href="/list">See All</a>
-    </div>
+    <>
+      {listItem.length === 0 ? (
+        <h2>No Todo Added Yet</h2>
+      ) : (
+        <div className="flex flex-row gap-4 items-center justify-center bg-slate-400">
+          {listItem.slice(-3).map((item, idx) => {
+            return <Item item={item} key={idx} />;
+          })}
+          <a href="/list">See All</a>
+        </div>
+      )}
+    </>
   );
 };
 

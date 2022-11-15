@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import InputForm from "../inputForm";
 import ListItems from "../listItem";
 
 const TodoList = () => {
-  const [editValue, setEditValue] = useState({});
   return (
     <div className="p-4">
-      <InputForm editValue={editValue} />
-      <ListItems setEditValue={setEditValue} />
+      <InputForm />
+      <ListItems />
     </div>
   );
 };

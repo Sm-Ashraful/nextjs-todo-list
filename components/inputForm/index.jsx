@@ -1,27 +1,45 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { addTodo, editTodoItem, setIsEditItem } from "../../redux/action";
+import {
+  addTodo,
+  setIsEditItem,
+  SetUpdateValueToTheList,
+} from "../../redux/action";
 
-const InputForm = ({ editValue }) => {
+const InputForm = () => {
   const [title, setTitle] = useState("");
   const [des, setDes] = useState("");
   const [copyValue, setCopyValue] = useState([]);
-  const [ctitle, setCtitle] = useState("");
-  const [cDes, setCdes] = useState("");
+  const [copyTitle, setCopyTitle] = useState("");
+  const [copyDes, setCopyDes] = useState("");
   const [inputEvent, setInputEvent] = useState([]);
   const dispatch = useDispatch();
 
+  const state = useSelector((state) => state);
   const isEditItem = useSelector((state) => state.todoReducer.isEditItem);
+  const editedValue = useSelector((state) => state.editReducer.editedValue);
 
   useEffect(() => {
-    setCdes(copyValue.des);
-    setCtitle(copyValue.title);
-  }, [copyValue]);
+    console.log("state: ", state);
+    console.log("edited Value: ", editedValue);
+    const copyItem = {
+      id: editedValue.id,
+      title: editedValue.title,
+      des: editedValue.des,
+    };
+    setCopyTitle(copyItem.title);
+    setCopyDes(copyItem.des);
+  }, [editedValue]);
 
   useEffect(() => {
-    setCopyValue(editValue);
-  }, [editValue]);
+    const editedData = {
+      id: editedValue.id,
+      title: copyTitle,
+      des: copyDes,
+    };
+    setCopyValue(editedData);
+  }, [copyTitle, copyDes]);
 
   useEffect(() => {
     const data = {
@@ -40,14 +58,8 @@ const InputForm = ({ editValue }) => {
   };
 
   const updateHandleSubmit = (e) => {
-    console.log("update handler call");
     e.preventDefault();
-    const editedValue = {
-      id: editValue.id,
-      title: ctitle,
-      des: cDes,
-    };
-    dispatch(editTodoItem(editedValue));
+    dispatch(SetUpdateValueToTheList(copyValue));
     dispatch(setIsEditItem(!isEditItem));
   };
 
@@ -84,7 +96,7 @@ const InputForm = ({ editValue }) => {
 
               <button
                 type="submit"
-                className="h-fit pl-4 p-3 border-2 border-black bg-white text-black rounded-lg"
+                className="h-fit pl-4 p-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               >
                 Add
               </button>
@@ -92,44 +104,44 @@ const InputForm = ({ editValue }) => {
           </div>
         </div>
       ) : (
-        <form onSubmit={updateHandleSubmit}>
-          <div className="space-x-4 flex flex-col gap-1 justify-center items-center">
-            <h3 className="text-xl">Update your todo</h3>
-            <div className="flex flex-row justify-center items-end">
+        <div className="space-x-4 flex flex-col gap-1 justify-center items-center">
+          <h3 className="text-xl">Update your todo</h3>
+          <div className="flex flex-row justify-center items-end">
+            <form onSubmit={updateHandleSubmit}>
               <div className="relative z-0 w-full group">
                 <input
                   type="text"
                   name="title"
                   className="w-full pl-4 p-3 border-2 text-sm border-gray-300 rounded-lg"
-                  value={ctitle || ""}
-                  onChange={(e) => setCtitle(e.target.value)}
+                  value={copyTitle || ""}
+                  onChange={(e) => setCopyTitle(e.target.value)}
                   required
                 />
                 <textarea
                   id="message"
                   rows="4"
                   className="w-full pl-4 p-3 border-2 text-sm border-gray-300 rounded-lg"
-                  value={cDes || ""}
-                  onChange={(e) => setCdes(e.target.value)}
+                  value={copyDes || ""}
+                  onChange={(e) => setCopyDes(e.target.value)}
                 ></textarea>
               </div>
 
               <button
                 type="submit"
-                className="h-fit pl-4 p-3 border-2 border-black bg-white text-black rounded-lg"
+                className="h-fit pl-4 p-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               >
                 Update
               </button>
               <button
                 type="submit"
                 onClick={editVisibilityHandler}
-                className="pl-4 p-3 border-2 border-black bg-red-400 text-black rounded-lg"
+                className="h-fit pl-4 p-3 focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-bold py-2 px-4 rounded dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
               >
                 Cancel
               </button>
-            </div>
+            </form>
           </div>
-        </form>
+        </div>
       )}
     </div>
   );
